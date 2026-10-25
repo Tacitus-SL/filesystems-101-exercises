@@ -64,6 +64,13 @@ static char **read_and_split(const char *path) {
         return empty;
     }
 
+    if (len == 0) {
+        free(buf);
+        char **arr = malloc(sizeof(char *));
+        if (arr) arr[0] = NULL;
+        return arr;
+    }
+
     size_t count = 0;
     for (size_t i = 0; i < len; i++) {
         if (buf[i] == '\0') {
