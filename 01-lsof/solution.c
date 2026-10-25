@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <ctype.h>
+#include <limits.h>
 #include "solution.h"
 
 static int is_pid_name(const char *s) {
@@ -49,14 +50,14 @@ void lsof(void) {
 				char symlink_path[1024];
 				snprintf(symlink_path, sizeof(symlink_path), "/proc/%s/fd/%s", proc_entry->d_name, fd_entry->d_name);
 
-				char target_buf[1024];
-				ssize_t len = readlink(symlink_path, target_buf, sizeof(target_buf) - 1);
-				if (len < 0) {
-					report_error(symlink_path, errno);
-				} else {
-					target_buf[len] = '\0';
-					report_file(target_buf);
-				}
+				char target_buf[PATH_MAX];
+                ssize_t len = readlink(symlink_path, target_buf, sizeof(target_buf) - 1);
+                if (len < 0) {
+                    report_error(symlink_path, errno);
+                } else {
+                    target_buf[len] = '\0';
+                    report_file(target_buf);
+                }
 			}
 			closedir(fd_dir);
         }
