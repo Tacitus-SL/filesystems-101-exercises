@@ -1,5 +1,4 @@
 #include <solution.h>
-
 #include <fuse.h>
 #include <stdio.h>
 #include <string.h>
@@ -93,19 +92,53 @@ static int hello_write(const char *path, const char *buf, size_t size, off_t off
 }
 
 static int hello_truncate(const char *path, off_t size, struct fuse_file_info *fi) {
+    (void) path; (void) size; (void) fi;
+    return -EROFS;
+}
+
+static int hello_create(const char *path, mode_t mode, struct fuse_file_info *fi) {
+    (void) path; (void) mode; (void) fi;
+    return -EROFS;
+}
+
+static int hello_mkdir(const char *path, mode_t mode) {
+    (void) path; (void) mode;
+    return -EROFS;
+}
+
+static int hello_unlink(const char *path) {
     (void) path;
-    (void) size;
-    (void) fi;
+    return -EROFS;
+}
+
+static int hello_rmdir(const char *path) {
+    (void) path;
+    return -EROFS;
+}
+
+static int hello_chmod(const char *path, mode_t mode, struct fuse_file_info *fi) {
+    (void) path; (void) mode; (void) fi;
+    return -EROFS;
+}
+
+static int hello_utimens(const char *path, const struct timespec tv[2], struct fuse_file_info *fi) {
+    (void) path; (void) tv; (void) fi;
     return -EROFS;
 }
 
 static const struct fuse_operations hellofs_ops = {
-    .getattr = hello_getattr,
-    .readdir = hello_readdir,
-    .open = hello_open,
-    .read = hello_read,
-    .write = hello_write,
-    .truncate = hello_truncate,
+    .getattr   = hello_getattr,
+    .readdir   = hello_readdir,
+    .open      = hello_open,
+    .read      = hello_read,
+    .write     = hello_write,
+    .truncate  = hello_truncate,
+    .create    = hello_create,
+    .mkdir     = hello_mkdir,
+    .unlink    = hello_unlink,
+    .rmdir     = hello_rmdir,
+    .chmod     = hello_chmod,
+    .utimens   = hello_utimens,
 };
 
 int helloworld(const char *mntp)
